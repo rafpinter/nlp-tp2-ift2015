@@ -79,13 +79,21 @@ public class WordMap {
         }
 
         public void addWord(String word, String fileName) {
-            Integer hashCode = word.hashCode();
-            wordMap.put(word, hashCode);
+            if (!wordMap.containsKey(word)) {
+                // Assign a unique identifier as the "size of the map + 1"
+                int uniqueId = wordMap.size() + 1;
+                wordMap.put(word, uniqueId);
 
-            // Update hashCodeToFileMap with condition
-            hashCodeToFileMap.computeIfAbsent(hashCode, k -> new ArrayList<>());
-            if (!hashCodeToFileMap.get(hashCode).contains(fileName)) {
-                hashCodeToFileMap.get(hashCode).add(fileName);
+                // Initialize the list for this uniqueId in hashCodeToFileMap
+                hashCodeToFileMap.put(uniqueId, new ArrayList<>());
+            }
+
+            int wordId = wordMap.get(word);
+            List<String> fileList = hashCodeToFileMap.get(wordId);
+
+            // Add the file name if it's not already in the list
+            if (!fileList.contains(fileName)) {
+                fileList.add(fileName);
             }
         }
 
@@ -99,7 +107,7 @@ public class WordMap {
 
         public void printWordHashCodes() {
             for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
-                System.out.println("Word: " + entry.getKey() + " - HashCode: " + entry.getValue());
+                System.out.println("Word: " + entry.getKey() + " - Entry position: " + entry.getValue());
             }
 
             // Optionally print the hashCodeToFileMap
