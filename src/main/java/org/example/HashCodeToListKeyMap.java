@@ -31,8 +31,8 @@ public class HashCodeToListKeyMap {
     public static void main(String[] args) {
         // Create WordHashCodeMap and populate it
         WordHashCodeMap wordHashCodeMap = new WordHashCodeMap();
-        wordHashCodeMap.addWord("hello");
-        wordHashCodeMap.addWord("world");
+        //wordHashCodeMap.addWord("hello");
+        //wordHashCodeMap.addWord("world");
 
         // Create HashCodeToListKeyMap
         HashCodeToListKeyMap hashCodeToListKeyMap = new HashCodeToListKeyMap();

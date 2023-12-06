@@ -8,6 +8,5 @@ public class Main {
         wordMap.processFiles();
         wordMap.printProcessedFiles();
 
-
     }
 }

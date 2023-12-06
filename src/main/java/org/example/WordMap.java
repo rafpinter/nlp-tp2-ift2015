@@ -16,9 +16,22 @@ public class WordMap {
 
     public static void main(String[] args) throws IOException {
         WordMap wordMap = new WordMap();
+
+        //ADDED
+        FileMap fileMap = new FileMap();
+
+
         wordMap.processFiles();
         // Optionally print the processed files here or in another method
         wordMap.printProcessedFiles();
+
+        //ADDED
+        wordMap.concatenateWords(fileMap);
+        // Print the concatenated words
+        fileMap.printLinkedList();
+
+
+
     }
 
     public void processFiles() throws IOException {
@@ -58,66 +71,48 @@ public class WordMap {
         return processedText;
     }
 
+
+    //ADDED
     public void printProcessedFiles() {
+        for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
+            //System.out.println("File: " + entry.getKey());
+            //System.out.println("Processed Content: " + entry.getValue());
+
+            // Print word positions for each file
+            for (String word : entry.getValue()) {
+                System.out.println("Word: " + word + " - Positions: " + wordHashCodeMap.getPositions(word, entry.getKey()));
+            }
+
+            System.out.println(); //Separate the files
+            System.out.println();
+            System.out.println();
+        }
+        //wordHashCodeMap.printWordHashCodes();
+    }
+
+
+    //ADDED
+    public void concatenateWords(FileMap fileMap) {
+        for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
+            for (String word : entry.getValue()) {
+                List<Integer> positions = wordHashCodeMap.getPositions(word, entry.getKey());
+                fileMap.linkList(word, positions, entry.getKey());
+            }
+        }
+    }
+
+
+
+}
+/**
+     public void printProcessedFiles() {
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
             System.out.println("File: " + entry.getKey());
             System.out.println("Processed Content: " + entry.getValue());
             System.out.println();
-        }
+     }
         // Optionally print all words with their hash codes
         wordHashCodeMap.printWordHashCodes();
-    }
+     }
 
-    // WordHashCodeMap class
-    public class WordHashCodeMap {
-        private Map<String, Integer> wordMap;
-        private Map<Integer, List<String>> hashCodeToFileMap;
-
-        public WordHashCodeMap() {
-            wordMap = new HashMap<>();
-            hashCodeToFileMap = new HashMap<>();
-        }
-
-        public void addWord(String word, String fileName) {
-            if (!wordMap.containsKey(word)) {
-                // Assign a unique identifier as the "size of the map + 1"
-                int uniqueId = wordMap.size() + 1;
-                wordMap.put(word, uniqueId);
-
-                // Initialize the list for this uniqueId in hashCodeToFileMap
-                hashCodeToFileMap.put(uniqueId, new ArrayList<>());
-            }
-
-            int wordId = wordMap.get(word);
-            List<String> fileList = hashCodeToFileMap.get(wordId);
-
-            // Add the file name if it's not already in the list
-            if (!fileList.contains(fileName)) {
-                fileList.add(fileName);
-            }
-        }
-
-        public Integer getHashCode(String word) {
-            return wordMap.get(word);
-        }
-
-        public Map<String, Integer> getWordMap() {
-            return wordMap;
-        }
-
-        public void printWordHashCodes() {
-            for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
-                System.out.println("Word: " + entry.getKey() + " - Entry position: " + entry.getValue());
-            }
-
-            // Optionally print the hashCodeToFileMap
-            printHashCodeToFileMap();
-        }
-
-        private void printHashCodeToFileMap() {
-            for (Map.Entry<Integer, List<String>> entry : hashCodeToFileMap.entrySet()) {
-                System.out.println("HashCode: " + entry.getKey() + " - Files: " + entry.getValue());
-            }
-        }
-    }
-}
+ **/

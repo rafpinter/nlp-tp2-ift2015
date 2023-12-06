@@ -55,4 +55,44 @@ public class FileMap {
         List<List<Integer>> retrievedValue2 = map.get(key2);
         System.out.println(key2 + ": " + retrievedValue2);
     }
+
+    //ADDED
+    private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
+
+    public void linkList(String word, List<Integer> positions, String fileName) {
+        // If the word is not in the map, add an entry for it
+        if (!linkedlist.containsKey(word)) {
+            linkedlist.put(word, new HashMap<>());
+        }
+
+        // If the file is not in the map, add an entry for it
+        if (!linkedlist.get(word).containsKey(fileName)) {
+            linkedlist.get(word).put(fileName, new ArrayList<>());
+        }
+
+        // Concatenate positions for the same word and file
+        List<Integer> existingPositions = linkedlist.get(word).get(fileName);
+        existingPositions.addAll(positions);
+        linkedlist.get(word).put(fileName, existingPositions);
+    }
+
+    public void printLinkedList() {
+        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+            String word = wordEntry.getKey();
+            Map<String, List<Integer>> filePositions = wordEntry.getValue();
+
+            System.out.print(word + " : [");
+
+            for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+                List<Integer> positions = fileEntry.getValue();
+                System.out.print(positions);
+                System.out.print( ",");
+            }
+            System.out.println("]");
+        }
+    }
+
 }
+
+
+
