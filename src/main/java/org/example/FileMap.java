@@ -57,7 +57,13 @@ public class FileMap {
     }
 
     //ADDED
-    private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
+
+
+    /**
+     *
+     * Test to print the resuts but its not stock/doesnt return the result tho
+     *
+     private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
 
     public void linkList(String word, List<Integer> positions, String fileName) {
         // If the word is not in the map, add an entry for it
@@ -76,23 +82,129 @@ public class FileMap {
         linkedlist.get(word).put(fileName, existingPositions);
     }
 
+     public void printLinkedList() {
+     for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+     String word = wordEntry.getKey();
+     Map<String, List<Integer>> filePositions = wordEntry.getValue();
+
+     System.out.print(word + " : [");
+
+     for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+     List<Integer> positions = fileEntry.getValue();
+     System.out.print(positions);
+     System.out.print( ",");
+     }
+     System.out.println("]");
+     }
+     }
+     **/
+
+    /**
+
+     // This method doesnt associate each word with positions in different files I think
+     // Yes probably
+
+     private Map<String, List<List<Integer>>> linkedlist = new HashMap<>();
+     public void linkList(String word, List<Integer> positions, String fileName) {
+     if (!linkedlist.containsKey(word)) {
+     linkedlist.put(word, new ArrayList<>());
+     }
+
+     List<Integer> currentPos = new ArrayList<>(positions);
+     linkedlist.get(word).add(currentPos);
+     }
+
+     public Map<String, List<List<Integer>>> getLinkedlist() {
+     return linkedlist;
+     }
+
+     public void printLinkedList() {
+     for (Map.Entry<String, List<List<Integer>>> wordEntry : linkedlist.entrySet()) {
+     String word = wordEntry.getKey();
+     List<List<Integer>> filePositionsList = wordEntry.getValue();
+
+     System.out.print(word + ": [");
+
+     int count = 0;
+     for (List<Integer> positions : filePositionsList) {
+     System.out.print(positions);
+
+     // Print comma and space if it's not the last entry
+     if (++count < filePositionsList.size()) {
+     System.out.print(", ");
+     }
+     }
+
+     System.out.println("]");
+     }
+     }
+     **/
+
+    //ADDED
+
+    //This one does associate each word with positions
+    // Use a stream ?
+    private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
+    public void linkList(String word, List<Integer> positions, String fileName) {
+
+        if (!linkedlist.containsKey(word)) {
+
+            linkedlist.put(word, new HashMap<>());
+        }
+
+        Map<String, List<Integer>> filePositions = linkedlist.get(word);
+
+        if (!filePositions.containsKey(fileName)) {
+
+            filePositions.put(fileName, new ArrayList<>());
+        }
+
+        List<Integer> existingPositions = filePositions.get(fileName);
+
+        existingPositions.addAll(positions);
+    }
+
+    public Map<String, Map<String, List<Integer>>> getLinkedlist() {
+
+        return linkedlist;
+    }
+
+
     public void printLinkedList() {
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-            String word = wordEntry.getKey();
-            Map<String, List<Integer>> filePositions = wordEntry.getValue();
 
-            System.out.print(word + " : [");
+            Map<String, List<Integer>> filePositions = wordEntry.getValue();
+            String leMot = wordEntry.getKey();
+
+            System.out.print(leMot + ": [");
+
+            int count = 0;
 
             for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+
                 List<Integer> positions = fileEntry.getValue();
                 System.out.print(positions);
-                System.out.print( ",");
+
+                // Print comma and space if it's not the last entry
+                if (++count < filePositions.size()) {
+
+                    System.out.print(", ");
+                }
             }
             System.out.println("]");
         }
     }
 
+
 }
+
+//Ressources and usefull links for the project
+
+// https://www.tabnine.com/code/java/methods/java.util.Map/entrySet
+// https://stackoverflow.com/questions/62533326/concatenate-a-list-of-hashmap-into-one-on-the-same-otder-they-are-and-without-ov
+
+
+
 
 
 

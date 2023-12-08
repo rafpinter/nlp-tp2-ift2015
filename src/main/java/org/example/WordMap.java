@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 
 public class WordMap {
@@ -23,10 +22,11 @@ public class WordMap {
 
         wordMap.processFiles();
         // Optionally print the processed files here or in another method
+
         wordMap.printProcessedFiles();
 
         //ADDED
-        wordMap.concatenateWords(fileMap);
+        wordMap.linkWords(fileMap);
         // Print the concatenated words
         fileMap.printLinkedList();
 
@@ -74,13 +74,15 @@ public class WordMap {
 
     //ADDED
     public void printProcessedFiles() {
+
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
             //System.out.println("File: " + entry.getKey());
             //System.out.println("Processed Content: " + entry.getValue());
 
             // Print word positions for each file
-            for (String word : entry.getValue()) {
-                System.out.println("Word: " + word + " - Positions: " + wordHashCodeMap.getPositions(word, entry.getKey()));
+            for (String mot : entry.getValue()) {
+
+                System.out.println("Word: " + mot + "  - Positions:  " + wordHashCodeMap.getPositions(mot, entry.getKey()));
             }
 
             System.out.println(); //Separate the files
@@ -92,11 +94,15 @@ public class WordMap {
 
 
     //ADDED
-    public void concatenateWords(FileMap fileMap) {
+    public void linkWords(FileMap fileMap) {
+
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
-            for (String word : entry.getValue()) {
-                List<Integer> positions = wordHashCodeMap.getPositions(word, entry.getKey());
-                fileMap.linkList(word, positions, entry.getKey());
+
+            for (String mot : entry.getValue()) {
+
+                List<Integer> positions = wordHashCodeMap.getPositions(mot, entry.getKey());
+
+                fileMap.linkList(mot, positions, entry.getKey());
             }
         }
     }
