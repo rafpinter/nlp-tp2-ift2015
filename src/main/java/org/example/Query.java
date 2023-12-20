@@ -7,26 +7,29 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Query {
 
-    public static void parseQuery(String filePath) {
+    public static void parseQuery(String filePath, WordMap wordMap) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.startsWith("search ")) {
                     String searchQuery = line.substring(7); // 7 is the length of "search "
-
-                    // Split the string into an array and print the array
                     String[] wordsArray = searchQuery.split(" ");
-                    System.out.println("TFIDF: " + Arrays.toString(wordsArray));
+
+                    // Update wordsArray with findMostSimilarWords
+                    List<String> updatedWords = findMostSimilarWords(Arrays.asList(wordsArray), wordMap.getAllWords());
+                    System.out.println("TFIDF: " + updatedWords);
                 } else if (line.contains("the most probable bigram of ")) {
                     int startIndex = line.indexOf("the most probable bigram of ") + "the most probable bigram of ".length();
                     String bigramQuery = line.substring(startIndex);
-
-                    // Split the string into an array and print the array
                     String[] wordsArray = bigramQuery.split(" ");
-                    System.out.println("Bigram of: " + Arrays.toString(wordsArray));
+
+                    // Update wordsArray with findMostSimilarWords
+                    List<String> updatedWords = findMostSimilarWords(Arrays.asList(wordsArray), wordMap.getAllWords());
+                    System.out.println("Bigram of: " + updatedWords);
                 } else {
                     System.out.println(line); // Print the line as is if it doesn't match the conditions
                 }
@@ -46,6 +49,27 @@ public class Query {
     public static String mostProbableBigram(String query, WordMap wordmap, FileMap filemap, Map<String, List<String>> processedFiles) {
         // Implementation would require analyzing the text to find the most frequent pair of words
         return null;
+    }
+
+    public static List<String> findMostSimilarWords(List<String> inputs, List<String> words) {
+        List<String> updatedInputs = new ArrayList<>();
+
+        for (String input : inputs) {
+            String mostSimilarWord = null;
+            int minDistance = Integer.MAX_VALUE;
+
+            for (String word : words) {
+                int distance = levenshteinDistance(input, word);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    mostSimilarWord = word;
+                }
+            }
+
+            updatedInputs.add(mostSimilarWord != null ? mostSimilarWord : input);
+        }
+
+        return updatedInputs;
     }
 
     // Method to calculate the Levenshtein distance between two strings

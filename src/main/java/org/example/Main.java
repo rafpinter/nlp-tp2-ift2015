@@ -32,7 +32,6 @@ public class Main {
 
         System.out.println(fileMap.getWordPositionsInDocument("with", "26.txt"));
 
-
-        query.parseQuery("src/main/java/org/example/queries/1.txt");
+        query.parseQuery("src/main/java/org/example/queries/1.txt", wordMap);
     }
 }
