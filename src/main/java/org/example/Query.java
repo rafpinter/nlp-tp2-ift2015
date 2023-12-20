@@ -1,15 +1,18 @@
 package org.example;
 
+import java.util.List;
+import java.util.Map;
+
 public class Query {
 
     // Method to perform a search operation
-    public static Object search(String query) {
-        // Implementation depends on the data source and search algorithm
-        return null;
-    }
+//    public static Object search(String query, WordMap wordmap, FileMap filemap, Map<String, List<String>> processedFiles) {
+//        // Implementation depends on the data source and search algorithm
+//        List<String> allwords = wordmap.wordHashCodeMap.keySet();
+//    }
 
     // Method to find the most probable bigram in a given text
-    public static String mostProbableBigram(String text) {
+    public static String mostProbableBigram(String query, WordMap wordmap, FileMap filemap, Map<String, List<String>> processedFiles) {
         // Implementation would require analyzing the text to find the most frequent pair of words
         return null;
     }

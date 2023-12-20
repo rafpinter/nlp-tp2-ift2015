@@ -6,59 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public class FileMap {
-    public static void main(String[] args) {
-        // Create a map with List keys and List of List of Integer values
-        Map<List<String>, List<List<Integer>>> map = new HashMap<>();
-
-        // Create lists to be used as keys
-        List<String> key1 = new ArrayList<>();
-        key1.add("900.txt");
-        key1.add("901.txt");
-
-        List<String> key2 = new ArrayList<>();
-        key2.add("900.txt");
-        key2.add("903.txt");
-
-        // Create lists of lists to be used as values
-        List<List<Integer>> value1 = new ArrayList<>();
-
-        List<Integer> value1Sublist1 = new ArrayList<>();
-        value1Sublist1.add(1);
-        value1Sublist1.add(2);
-        value1.add(value1Sublist1);
-
-        List<Integer> value1Sublist2 = new ArrayList<>(); // Second sublist for value1
-        value1Sublist2.add(5);
-        value1Sublist2.add(6);
-        value1.add(value1Sublist2);
-
-        List<List<Integer>> value2 = new ArrayList<>();
-
-        List<Integer> value2Sublist1 = new ArrayList<>();
-        value2Sublist1.add(3);
-        value2Sublist1.add(4);
-        value2.add(value2Sublist1);
-
-        List<Integer> value2Sublist2 = new ArrayList<>(); // Second sublist for value2
-        value2Sublist2.add(7);
-        value2Sublist2.add(8);
-        value2.add(value2Sublist2);
-
-        // Put entries into the map using the lists as keys and list of lists as values
-        map.put(key1, value1);
-        map.put(key2, value2);
-
-        // Accessing values from the map using the keys
-        List<List<Integer>> retrievedValue1 = map.get(key1);
-        System.out.println(key1 + ": " + retrievedValue1);
-
-        List<List<Integer>> retrievedValue2 = map.get(key2);
-        System.out.println(key2 + ": " + retrievedValue2);
-    }
+//    public static void main(String[] args) {
+//        // Create a map with List keys and List of List of Integer values
+//
+//    }
 
     //ADDED
-
-
     /**
      *
      * Test to print the resuts but its not stock/doesnt return the result tho
@@ -145,23 +98,107 @@ public class FileMap {
     //This one does associate each word with positions
     // Use a stream ?
     private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
+
+    public List<List<Integer>> getWordPositionOnDocumentsList(String word) {
+        List<List<Integer>> positionsList = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+            Map<String, List<Integer>> filePositions = wordEntry.getValue();
+            String leMot = wordEntry.getKey();
+
+            if (leMot.equals(word)){
+                System.out.println(word + " was found at " + filePositions.entrySet());
+                for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+                    List<Integer> positions = fileEntry.getValue();
+                    positionsList.add(positions);
+                }
+            }
+        }
+
+        return positionsList;
+    }
+
+//    public void getWordPositionOnDocumentsList(String word){
+//        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+//
+//            Map<String, List<Integer>> filePositions = wordEntry.getValue();
+//            String leMot = wordEntry.getKey();
+//
+//            if (leMot.equals(word)){
+//                System.out.print(leMot + ": [");
+//
+//                int count = 0;
+//
+//                for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+//                    //                System.out.print(fileEntry.getKey());
+//                    List<Integer> positions = fileEntry.getValue();
+//                    System.out.print(positions);
+//
+//                    // Print comma and space if it's not the last entry
+//                    if (++count < filePositions.size()) {
+//
+//                        System.out.print(", ");
+//                    }
+//                }
+//                System.out.println("]");
+//            }
+//        }
+//    }
+
+//    public List<List<String>> getListOfDocumentsWithWord(String word){
+//
+//        List<List<Integer>> positionsList = new ArrayList<>();
+//
+//        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+//        Map<String, List<Integer>> filePositions = wordEntry.getValue();
+//        String leMot = wordEntry.getKey();
+//
+//        if (leMot.equals(word)){
+//            for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
+//                List<Integer> positions = fileEntry.getValue();
+//                positionsList.add(positions);
+//            }
+//        }
+//    }
+//
+//        return positionsList;
+//    }
+
     public void linkList(String word, List<Integer> positions, String fileName) {
 
-        if (!linkedlist.containsKey(word)) {
+        // If the word is not in the map, initialize it
+        linkedlist.computeIfAbsent(word, k -> new HashMap<>());
 
-            linkedlist.put(word, new HashMap<>());
-        }
-
+        // Get the map for the file
         Map<String, List<Integer>> filePositions = linkedlist.get(word);
 
-        if (!filePositions.containsKey(fileName)) {
+        // If the file is not in the map, initialize it
+        filePositions.computeIfAbsent(fileName, k -> new ArrayList<>());
 
-            filePositions.put(fileName, new ArrayList<>());
-        }
-
+        // Get the existing positions for the word in the file
         List<Integer> existingPositions = filePositions.get(fileName);
 
-        existingPositions.addAll(positions);
+        // Add the new positions, avoiding duplicates
+        for (Integer pos : positions) {
+            if (!existingPositions.contains(pos)) {
+                existingPositions.add(pos);
+            }
+        }
+//        if (!linkedlist.containsKey(word)) {
+//
+//            linkedlist.put(word, new HashMap<>());
+//        }
+//
+//        Map<String, List<Integer>> filePositions = linkedlist.get(word);
+//
+//        if (!filePositions.containsKey(fileName)) {
+//
+//            filePositions.put(fileName, new ArrayList<>());
+//        }
+//
+//        List<Integer> existingPositions = filePositions.get(fileName);
+//
+//        existingPositions.addAll(positions);
     }
 
     public Map<String, Map<String, List<Integer>>> getLinkedlist() {
@@ -171,6 +208,7 @@ public class FileMap {
 
 
     public void printLinkedList() {
+
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
 
             Map<String, List<Integer>> filePositions = wordEntry.getValue();
@@ -181,7 +219,7 @@ public class FileMap {
             int count = 0;
 
             for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
-
+//                System.out.print(fileEntry.getKey());
                 List<Integer> positions = fileEntry.getValue();
                 System.out.print(positions);
 
@@ -194,8 +232,6 @@ public class FileMap {
             System.out.println("]");
         }
     }
-
-
 }
 
 //Ressources and usefull links for the project

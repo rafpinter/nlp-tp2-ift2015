@@ -23,19 +23,17 @@ public class WordMap {
         wordMap.processFiles();
         // Optionally print the processed files here or in another method
 
-        wordMap.printProcessedFiles();
+//        wordMap.printProcessedFiles();
 
         //ADDED
         wordMap.linkWords(fileMap);
         // Print the concatenated words
-        fileMap.printLinkedList();
-
-
+//        fileMap.printLinkedList();
 
     }
 
     public void processFiles() throws IOException {
-        File folder = new File("src/main/java/org/example/dataset");
+        File folder = new File("src/main/java/org/example/sample_dataset");
         File[] files = folder.listFiles();
 
         if (files != null) {
@@ -71,7 +69,6 @@ public class WordMap {
         return processedText;
     }
 
-
     //ADDED
     public void printProcessedFiles() {
 
@@ -91,7 +88,6 @@ public class WordMap {
         }
         //wordHashCodeMap.printWordHashCodes();
     }
-
 
     //ADDED
     public void linkWords(FileMap fileMap) {

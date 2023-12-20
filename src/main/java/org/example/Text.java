@@ -24,29 +24,50 @@ public class Text {
     // Parses the given text and returns some form of representation
     public static List<String> parseText(String text) {
         // Replace punctuation with a space
-        String noPunctuation = replacePunctuation(text, " ");
+        String noPunctuationText = replacePunctuation(text, " ");
+        StringBuffer word = new StringBuffer();
 
-        // Replace two or more consecutive spaces with a single space
-        String singleSpaced = replaceSpaces(noPunctuation);
+        // set up pipeline properties
+        Properties props = new Properties();
+        // set the list of annotators to run
+        props.setProperty("annotators", "tokenize,pos,lemma");
+        // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
+        props.setProperty("coref.algorithm", "neural");
+        // build pipeline
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        // create a document object
+        CoreDocument document = new CoreDocument(noPunctuationText);
+        // annotate the document
+        pipeline.annotate(document);
+        // System.out.println(document.tokens());
+        for (CoreLabel tok : document.tokens()) {
+//            System.out.println(String.format("%s\t%s", tok.word(), tok.lemma()));
+            String str = String.valueOf(tok.lemma());
+            if (!(str.contains("'s") || str.contains("’s"))) {
+                word.append(str).append(" ");
+            }
+        }
+        String str = String.valueOf(word);
+        str = str.replaceAll("[^a-zA-Z0-9]", " ").replaceAll("\\s+", " ").trim();
 
         // Tokenize the text
-        List<String> tokens = tokenize(singleSpaced);
+        List<String> tokens = tokenize(str);
 
-        // Lemmatize the text
-        List<String> lemmatizedTokens = lemmatize(tokens);
+        return tokens;
 
-        // Return the list of lemmatized tokens
-        return lemmatizedTokens;
+//        // Tokenize the text
+//        List<String> tokens = tokenize(noPunctuationText);
+//
+//        // Lemmatize the text
+//        List<String> lemmatizedTokens = lemmatize(tokens);
+//
+//        // Return the list of lemmatized tokens
+//        return lemmatizedTokens;
     }
 
     // Replaces punctuation in the text with specified character or removal
     public static String replacePunctuation(String text, String replacement) {
-        return text.replaceAll("[!\"#$%&'()*+,-./:;<=>?@\\[\\]^_`{|}~]", replacement);
-    }
-
-    // Replaces two or more consecutive spaces in the text with a single space
-    public static String replaceSpaces(String text) {
-        return text.replaceAll("\\s{2,}", " ");
+        return text.replaceAll("[^’'a-zA-Z0-9]", replacement).replaceAll("\\s+", " ").trim();
     }
 
 
@@ -70,58 +91,57 @@ public class Text {
                 tokens.add(token.originalText());
             }
         }
-
         return tokens;
     }
-
-    // Performs part-of-speech tagging on the text
-    public static List<String> pos(String text) {
-        // Setting up the CoreNLP pipeline with POS tagging
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-        // Create an empty Annotation with the given text
-        Annotation document = new Annotation(text);
-        pipeline.annotate(document);
-
-        // List to store the tagged words
-        List<String> posTags = new ArrayList<>();
-
-        // Iterate over all tokens and add POS tags to the list
-        for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
-            for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-                posTags.add(token.word() + "/" + pos);
-            }
-        }
-
-        return posTags;
-    }
-
-    // Lemmatizes the text
-    public static List<String> lemmatize(List<String> tokens) {
-        // Setting up the CoreNLP pipeline with Lemmatization
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-        List<String> lemmatizedTokens = new ArrayList<>();
-
-        // Create an empty Annotation with the given text
-        for (String token : tokens) {
-            Annotation document = new Annotation(token);
-            pipeline.annotate(document);
-
-            // Iterate over all tokens and add lemmas to the list
-            for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
-                for (CoreLabel cl : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
-                    String lemma = cl.get(CoreAnnotations.LemmaAnnotation.class);
-                    lemmatizedTokens.add(lemma);
-                }
-            }
-        }
-
-        return lemmatizedTokens;
-    }
+//
+//    // Performs part-of-speech tagging on the text
+//    public static List<String> pos(String text) {
+//        // Setting up the CoreNLP pipeline with POS tagging
+//        Properties props = new Properties();
+//        props.setProperty("annotators", "tokenize,ssplit,pos");
+//        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+//
+//        // Create an empty Annotation with the given text
+//        Annotation document = new Annotation(text);
+//        pipeline.annotate(document);
+//
+//        // List to store the tagged words
+//        List<String> posTags = new ArrayList<>();
+//
+//        // Iterate over all tokens and add POS tags to the list
+//        for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
+//            for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+//                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+//                posTags.add(token.word() + "/" + pos);
+//            }
+//        }
+//
+//        return posTags;
+//    }
+//
+//    // Lemmatizes the text
+//    public static List<String> lemmatize(List<String> tokens) {
+//        // Setting up the CoreNLP pipeline with Lemmatization
+//        Properties props = new Properties();
+//        props.setProperty("annotators", "tokenize,ssplit,pos,lemma");
+//        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+//
+//        List<String> lemmatizedTokens = new ArrayList<>();
+//
+//        // Create an empty Annotation with the given text
+//        for (String token : tokens) {
+//            Annotation document = new Annotation(token);
+//            pipeline.annotate(document);
+//
+//            // Iterate over all tokens and add lemmas to the list
+//            for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
+//                for (CoreLabel cl : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+//                    String lemma = cl.get(CoreAnnotations.LemmaAnnotation.class);
+//                    lemmatizedTokens.add(lemma);
+//                }
+//            }
+//        }
+//
+//        return lemmatizedTokens;
+//    }
 }
