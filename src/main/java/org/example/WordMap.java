@@ -4,11 +4,13 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 
 public class WordMap {
     // HashMap to store file names and their processed content
     public static Map<String, List<String>> processedFiles = new HashMap<>();
+    public static Map<String, List<String>> fileToProcessedTextMap = new HashMap<>(); // New HashMap
     public WordHashCodeMap wordHashCodeMap = new WordHashCodeMap();
 
     // add wordMap as attribute
@@ -40,6 +42,10 @@ public class WordMap {
             for (File file : files) {
                 if (file.isFile()) {
                     List<String> processedText = readAndProcessFile(file);
+
+                    // Store the processed text in the new map
+                    fileToProcessedTextMap.put(file.getName(), processedText);
+
                     processedFiles.put(file.getName(), processedText);
                     // Add file to the list of files for each word in WordHashCodeMap
                     for (String word : processedText) {
@@ -49,6 +55,25 @@ public class WordMap {
             }
         }
     }
+
+
+//    public void processFiles() throws IOException {
+//        File folder = new File("src/main/java/org/example/sample_dataset");
+//        File[] files = folder.listFiles();
+//
+//        if (files != null) {
+//            for (File file : files) {
+//                if (file.isFile()) {
+//                    List<String> processedText = readAndProcessFile(file);
+//                    processedFiles.put(file.getName(), processedText);
+//                    // Add file to the list of files for each word in WordHashCodeMap
+//                    for (String word : processedText) {
+//                        wordHashCodeMap.addWord(word, file.getName());
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     public List<String> readAndProcessFile(File file) throws IOException {
         StringBuilder fileContent = new StringBuilder();
@@ -88,6 +113,16 @@ public class WordMap {
         }
         //wordHashCodeMap.printWordHashCodes();
     }
+    public void printFileToProcessedTextMap() {
+        for (Map.Entry<String, List<String>> entry : fileToProcessedTextMap.entrySet()) {
+            String fileName = entry.getKey();
+            List<String> processedText = entry.getValue();
+
+            System.out.println("File: " + fileName);
+            System.out.println("Processed Text: " + processedText);
+            System.out.println(); // For better readability
+        }
+    }
 
     //ADDED
     public void linkWords(FileMap fileMap) {
@@ -101,6 +136,10 @@ public class WordMap {
                 fileMap.linkList(mot, positions, entry.getKey());
             }
         }
+    }
+
+    public List<String> getAllWords() {
+        return new ArrayList<>(wordHashCodeMap.getWordMap().keySet());
     }
 
 

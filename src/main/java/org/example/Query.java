@@ -3,7 +3,38 @@ package org.example;
 import java.util.List;
 import java.util.Map;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+
 public class Query {
+
+    public static void parseQuery(String filePath) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("search ")) {
+                    String searchQuery = line.substring(7); // 7 is the length of "search "
+
+                    // Split the string into an array and print the array
+                    String[] wordsArray = searchQuery.split(" ");
+                    System.out.println("TFIDF: " + Arrays.toString(wordsArray));
+                } else if (line.contains("the most probable bigram of ")) {
+                    int startIndex = line.indexOf("the most probable bigram of ") + "the most probable bigram of ".length();
+                    String bigramQuery = line.substring(startIndex);
+
+                    // Split the string into an array and print the array
+                    String[] wordsArray = bigramQuery.split(" ");
+                    System.out.println("Bigram of: " + Arrays.toString(wordsArray));
+                } else {
+                    System.out.println(line); // Print the line as is if it doesn't match the conditions
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
 
     // Method to perform a search operation
 //    public static Object search(String query, WordMap wordmap, FileMap filemap, Map<String, List<String>> processedFiles) {

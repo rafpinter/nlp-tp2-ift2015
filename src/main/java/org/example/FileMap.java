@@ -118,6 +118,39 @@ public class FileMap {
         return positionsList;
     }
 
+    public List<String> getDocumentsWithWord(String word) {
+        List<String> fileList = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
+            String currentWord = wordEntry.getKey();
+
+            if (currentWord.equals(word)) {
+                Map<String, List<Integer>> filePositions = wordEntry.getValue();
+                System.out.println(word + " was found in files: " + filePositions.keySet());
+
+                fileList.addAll(filePositions.keySet());
+            }
+        }
+
+        return fileList;
+    }
+
+    public List<Integer> getWordPositionsInDocument(String word, String documentName) {
+        List<List<Integer>> positionsList = getWordPositionOnDocumentsList(word);
+        List<String> documentList = getDocumentsWithWord(word);
+
+        int documentIndex = documentList.indexOf(documentName);
+        if (documentIndex != -1 && documentIndex < positionsList.size()) {
+            // Return the positions for the specific document
+            return positionsList.get(documentIndex);
+        } else {
+            // If the document is not found, return an empty list or null based on your preference
+            return new ArrayList<>();
+        }
+    }
+
+
+
 //    public void getWordPositionOnDocumentsList(String word){
 //        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
 //
@@ -184,6 +217,7 @@ public class FileMap {
                 existingPositions.add(pos);
             }
         }
+
 //        if (!linkedlist.containsKey(word)) {
 //
 //            linkedlist.put(word, new HashMap<>());
