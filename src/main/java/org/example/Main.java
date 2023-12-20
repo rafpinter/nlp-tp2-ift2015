@@ -21,17 +21,17 @@ public class Main {
         // Print the concatenated words
 //        fileMap.printLinkedList();
 //        List<List<Integer>> wordPositionList = fileMap.getWordPositionOnDocumentsList("with");
-//        List<String> documentsPositionList = fileMap.getDocumentsWithWord("with");
+//        List<String> documentsPositionList = fileMap.getDocumentsWithWord("with") ;
+//
+////        System.out.println(wordPositionList);
+//        System.out.println("Documentos com with: " + documentsPositionList);
+//
+//        wordMap.printFileToProcessedTextMap();
+//
+//        List<String> allWords = wordMap.getAllWords();
+//
+//        System.out.println(fileMap.getWordPositionsInDocument("with", "26.txt"));
 
-//        System.out.println(wordPositionList);
-//        System.out.println(documentsPositionList);
-
-        wordMap.printFileToProcessedTextMap();
-
-        List<String> allWords = wordMap.getAllWords();
-
-        System.out.println(fileMap.getWordPositionsInDocument("with", "26.txt"));
-
-        query.parseQuery("src/main/java/org/example/queries/1.txt", wordMap);
+        query.parseQuery("src/main/java/org/example/queries/1.txt", wordMap, fileMap);
     }
 }

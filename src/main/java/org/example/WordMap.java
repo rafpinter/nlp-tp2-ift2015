@@ -35,7 +35,7 @@ public class WordMap {
     }
 
     public void processFiles() throws IOException {
-        File folder = new File("src/main/java/org/example/sample_dataset");
+        File folder = new File("src/main/java/org/example/dataset");
         File[] files = folder.listFiles();
 
         if (files != null) {
@@ -141,7 +141,13 @@ public class WordMap {
     public List<String> getAllWords() {
         return new ArrayList<>(wordHashCodeMap.getWordMap().keySet());
     }
-
+    public List<String> getListOfDocumentNames() {
+        return new ArrayList<>(fileToProcessedTextMap.keySet());
+    }
+    // Method to get processed text for a given file name
+    public List<String> getProcessedTextForFile(String fileName) {
+        return fileToProcessedTextMap.get(fileName);
+    }
 
 
 }
