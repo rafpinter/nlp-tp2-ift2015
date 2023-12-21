@@ -107,7 +107,7 @@ public class FileMap {
             String leMot = wordEntry.getKey();
 
             if (leMot.equals(word)){
-                System.out.println(word + " was found at " + filePositions.entrySet());
+//                System.out.println(word + " was found at " + filePositions.entrySet());
                 for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
                     List<Integer> positions = fileEntry.getValue();
                     positionsList.add(positions);
@@ -126,7 +126,7 @@ public class FileMap {
 
             if (currentWord.equals(word)) {
                 Map<String, List<Integer>> filePositions = wordEntry.getValue();
-                System.out.println(word + " was found in files: " + filePositions.keySet());
+//                System.out.println(word + " was found in files: " + filePositions.keySet());
 
                 fileList.addAll(filePositions.keySet());
             }
