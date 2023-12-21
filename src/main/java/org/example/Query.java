@@ -106,7 +106,6 @@ public class Query {
         System.out.println("Document with highest score: " + highestScoringDocument + ", Score: " + maxScore);
 
         return highestScoringDocument;
-
     }
 
 
@@ -114,7 +113,7 @@ public class Query {
     //
     // Anne, please use this method for your part
     // Method to find the most probable bigram in a given text
-    public static String mostProbableBigram(String query, WordMap wordmap, FileMap filemap, Map<String, List<String>> processedFiles) {
+    public static String mostProbableBigram() {
         // Implementation would require analyzing the text to find the most frequent pair of words
         return null;
     }
