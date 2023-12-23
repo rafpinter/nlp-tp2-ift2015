@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -33,5 +34,7 @@ public class Main {
 //        System.out.println(fileMap.getWordPositionsInDocument("with", "26.txt"));
 
         query.parseQuery("src/main/java/org/example/queries/1.txt", wordMap, fileMap);
+
+        //System.out.print(Query.mostProbableBigram(Arrays.asList("coffe"),wordMap,fileMap));
     }
 }

@@ -150,6 +150,27 @@ public class WordMap {
     }
 
 
+    // ///////For the most probable bigram:
+    // HashMap pour stocker les occurrences de mots dans l'ensemble des documents
+    private Map<String, Integer> wordCountMap = new HashMap<>();
+
+    // Méthode pour incrémenter le compteur d'occurrences d'un mot
+    public void incrementWordCount(String word) {
+        // Obtenir le compteur actuel du mot
+        int currentCount = wordCountMap.getOrDefault(word, 0);
+
+        // Incrémentez le compteur
+        wordCountMap.put(word, currentCount + 1);
+    }
+
+    // Méthode pour obtenir le nombre d'occurrences d'un mot dans l'ensemble des documents
+    public int getWordCount(String word) {
+        // Retournez le compteur du mot, ou 0 si le mot n'a pas été trouvé
+        return wordCountMap.getOrDefault(word, 0);
+    }
+
+
+
 }
 /**
      public void printProcessedFiles() {

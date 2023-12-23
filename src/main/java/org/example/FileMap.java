@@ -150,6 +150,37 @@ public class FileMap {
     }
 
 
+    // For the most probable bigram
+    // HashMap pour stocker les co-occurrences de bigrammes dans chaque document
+    private Map<String, Map<String, Integer>> bigramCountMap = new HashMap<>();
+
+    // Méthode pour incrémenter le compteur de co-occurrences d'un bigramme dans un document
+    public void incrementBigramCount(String word1, String word2, String document) {
+        // Vérifier si le document est déjà dans la carte
+        if (!bigramCountMap.containsKey(document)) {
+            bigramCountMap.put(document, new HashMap<>());
+        }
+
+        // Obtenir la carte de co-occurrences pour le document
+        Map<String, Integer> documentBigramCountMap = bigramCountMap.get(document);
+
+        // Obtenir le compteur actuel du bigramme dans le document
+        int currentCount = documentBigramCountMap.getOrDefault(word1 + "_" + word2, 0);
+
+        // Incrémenter le compteur
+        documentBigramCountMap.put(word1 + "_" + word2, currentCount + 1);
+    }
+
+    // Méthode pour obtenir le nombre de co-occurrences d'un bigramme dans un document
+    public int getBigramCount(String word1, String word2, String document) {
+        // Obtenir la carte de co-occurrences pour le document
+        Map<String, Integer> documentBigramCountMap = bigramCountMap.get(document);
+
+        // Retourner le compteur du bigramme, ou 0 si le bigramme n'a pas été trouvé
+        return documentBigramCountMap != null ? documentBigramCountMap.getOrDefault(word1 + "_" + word2, 0) : 0;
+    }
+
+
 
 //    public void getWordPositionOnDocumentsList(String word){
 //        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {

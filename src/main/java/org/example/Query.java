@@ -25,6 +25,7 @@ public class Query {
 
                     // Update wordsArray with findMostSimilarWords
                     List<String> updatedWords = findMostSimilarWords(Arrays.asList(wordsArray), wordMap.getAllWords());
+                    System.out.println();
                     System.out.println("TFIDF: " + updatedWords);
                     String documentFound = search(updatedWords, wordMap, fileMap);
 
@@ -39,7 +40,16 @@ public class Query {
 
                     // Update wordsArray with findMostSimilarWords
                     List<String> updatedWords = findMostSimilarWords(Arrays.asList(wordsArray), wordMap.getAllWords());
-                    System.out.println("Bigram of: " + updatedWords);
+
+                    // Give the most probable words comming after another
+
+                    //Write the solution in the file
+                    String wordFound = mostProbableBigram(updatedWords, wordMap, fileMap);
+                    System.out.println("Bigram of: " + updatedWords + " is " + wordFound);
+                    System.out.println();
+
+                    outputText.append(wordFound).append("\n");
+
 
                 } else {
                     System.out.println(line); // Print the line as is if it doesn't match the conditions
@@ -108,14 +118,68 @@ public class Query {
         return highestScoringDocument;
     }
 
-
     // IMPORTANT!
     //
     // Anne, please use this method for your part
     // Method to find the most probable bigram in a given text
-    public static String mostProbableBigram() {
-        // Implementation would require analyzing the text to find the most frequent pair of words
-        return null;
+    public static String mostProbableBigram(List<String> updatedWords, WordMap wordMap, FileMap fileMap) {
+        // Map to store the probabilities of each possible next word
+        Map<String, Double> probabilities = new HashMap<>();
+
+        // Use the last word in the updatedWords list as the query word
+        String queryWord = updatedWords.get(updatedWords.size() - 1);
+
+        // Iterate through all documents
+        List<String> documentNames = wordMap.getListOfDocumentNames();
+        for (String documentName : documentNames) {
+            List<String> wordsInDocument = wordMap.getProcessedTextForFile(documentName);
+
+            // Iterate through all words in the document to find the most probable next word
+            for (int i = 0; i < wordsInDocument.size() - 1; i++) {
+                String currentWord = wordsInDocument.get(i);
+                String nextWord = wordsInDocument.get(i + 1);
+
+                // Check if the current word matches the query word
+                if (currentWord.equals(queryWord)) {
+                    // Calculate the probability of nextWord given queryWord: P(nextWord | queryWord) = C(queryWord, nextWord) / C(queryWord)
+                    int countQueryWordNextWord = fileMap.getBigramCount(queryWord, nextWord, documentName);
+                    int countQueryWord = wordMap.getWordCount(queryWord);
+
+                    double probability = (double) countQueryWordNextWord / countQueryWord;
+
+                    // Update the probabilities map
+                    probabilities.put(nextWord, probabilities.getOrDefault(nextWord, 0.0) + probability);
+                }
+            }
+        }
+
+        // Find the word with the highest accumulated probability
+        String mostProbableWord = findMostProbableWord(probabilities);
+
+        return mostProbableWord;
+    }
+
+    private static String findMostProbableWord(Map<String, Double> probabilities) {
+        String mostProbableWord = null;
+        double maxProbability = 0.0;
+
+        for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
+            if (entry.getValue() > maxProbability) {
+                maxProbability = entry.getValue();
+                mostProbableWord = entry.getKey();
+            }
+        }
+
+        // If there are multiple words with the same probability, return the smallest one
+        if (mostProbableWord != null) {
+            for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
+                if (entry.getValue() == maxProbability && entry.getKey().compareTo(mostProbableWord) < 0) {
+                    mostProbableWord = entry.getKey();
+                }
+            }
+        }
+
+        return mostProbableWord;
     }
 
     public static List<String> findMostSimilarWords(List<String> inputs, List<String> words) {
