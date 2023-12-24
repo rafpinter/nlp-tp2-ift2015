@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.ArrayList;
 
 
-public class WordMap {
+public class WordMap implements IWordMap {
     // HashMap to store file names and their processed content
     public static Map<String, List<String>> processedFiles = new HashMap<>();
     public static Map<String, List<String>> fileToProcessedTextMap = new HashMap<>(); // New HashMap
@@ -55,25 +55,6 @@ public class WordMap {
             }
         }
     }
-
-
-//    public void processFiles() throws IOException {
-//        File folder = new File("src/main/java/org/example/sample_dataset");
-//        File[] files = folder.listFiles();
-//
-//        if (files != null) {
-//            for (File file : files) {
-//                if (file.isFile()) {
-//                    List<String> processedText = readAndProcessFile(file);
-//                    processedFiles.put(file.getName(), processedText);
-//                    // Add file to the list of files for each word in WordHashCodeMap
-//                    for (String word : processedText) {
-//                        wordHashCodeMap.addWord(word, file.getName());
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     public List<String> readAndProcessFile(File file) throws IOException {
         StringBuilder fileContent = new StringBuilder();
@@ -151,15 +132,3 @@ public class WordMap {
 
 
 }
-/**
-     public void printProcessedFiles() {
-        for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
-            System.out.println("File: " + entry.getKey());
-            System.out.println("Processed Content: " + entry.getValue());
-            System.out.println();
-     }
-        // Optionally print all words with their hash codes
-        wordHashCodeMap.printWordHashCodes();
-     }
-
- **/

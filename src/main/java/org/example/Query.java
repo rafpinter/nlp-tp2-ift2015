@@ -1,5 +1,4 @@
 package org.example;
-
 import java.util.List;
 import java.util.Map;
 import java.io.BufferedWriter;
@@ -12,10 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Query {
+public class Query implements IQuery {
     private static StringBuilder outputText = new StringBuilder();
 
-    public static void parseQuery(String filePath, WordMap wordMap, FileMap fileMap) {
+    public void parseQuery(String filePath, WordMap wordMap, FileMap fileMap) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -64,7 +63,7 @@ public class Query {
                     outputText.append(updatedWords.get(0) + " " + bigram).append("\n");
 
                 } else {
-                    System.out.println(line); // Print the line as is if it doesn't match the conditions
+                    System.out.println(line);
                 }
                 // Convert StringBuilder to String
                 String outputString = outputText.toString();
@@ -95,7 +94,7 @@ public class Query {
     }
 
     // Method to perform a search operation
-    public static String search(List<String> updatedWords, WordMap wordMap, FileMap fileMap) {
+    public String search(List<String> updatedWords, WordMap wordMap, FileMap fileMap) {
         List<String> documentNames = wordMap.getListOfDocumentNames();
         Map<String, Float> documentScores = new HashMap<>();
 
@@ -141,11 +140,7 @@ public class Query {
         return highestScoringDocument;
     }
 
-    // IMPORTANT!
-    //
-    // Anne, please use this method for your part
-    // Method to find the most probable bigram in a given text
-    public static String mostProbableBigram(String word, FileMap fileMap, WordMap wordMap) {
+    public String mostProbableBigram(String word, FileMap fileMap, WordMap wordMap) {
 
         // Conditionnal probabilite for each word
         Map<String, Integer> compteur = fileMap.getFollowingWord(word, wordMap);
@@ -190,7 +185,7 @@ public class Query {
         return probable;
     }
 
-    public static List<String> findMostSimilarWords(List<String> inputs, List<String> words) {
+    public List<String> findMostSimilarWords(List<String> inputs, List<String> words) {
         List<String> updatedInputs = new ArrayList<>();
 
         for (String input : inputs) {
@@ -211,8 +206,7 @@ public class Query {
         return updatedInputs;
     }
 
-    // Method to calculate the Levenshtein distance between two strings
-    public static int levenshteinDistance(String str1, String str2) {
+    public int levenshteinDistance(String str1, String str2) {
         int len1 = str1.length();
         int len2 = str2.length();
 
