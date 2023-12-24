@@ -59,7 +59,7 @@ public class Query {
                     System.out.println();
                     // The most probable bi-gram coming after updatedWords
                     String bigram =  mostProbableBigram(updatedWords.get(0), fileMap, wordMap);
-                    System.out.println("Bigram of: " + updatedWords + " is " + bigram);
+                    System.out.println("Bigram of: " + updatedWords.get(0) + " is " + bigram);
                     System.out.println();
                     outputText.append(updatedWords.get(0) + " " + bigram).append("\n");
 
@@ -151,6 +151,7 @@ public class Query {
 
             // P(W2|W1) = C(W1, W2) / C(W1)
             double probabilite = (double) occurrences / totalOccurrences;
+            System.out.println("The probability of " + followingWord + " is "+ probabilite);
             proba.put(followingWord, probabilite);
         }
 
@@ -161,6 +162,7 @@ public class Query {
     }
 
     private static String mostProbableWord(Map<String, Double> probabilities) {
+
         // Find the word with the highest probability
         String probable = null;
         double highestProbability = 0.0;

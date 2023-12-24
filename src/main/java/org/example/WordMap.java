@@ -12,25 +12,24 @@ public class WordMap {
     public static Map<String, List<String>> processedFiles = new HashMap<>();
     public static Map<String, List<String>> fileToProcessedTextMap = new HashMap<>(); // New HashMap
     public WordHashCodeMap wordHashCodeMap = new WordHashCodeMap();
+    private static final double loadFactor = 0.75;
 
     // add wordMap as attribute
 
     public static void main(String[] args) throws IOException {
         WordMap wordMap = new WordMap();
 
-        //ADDED
         FileMap fileMap = new FileMap();
 
 
         wordMap.processFiles();
-        // Optionally print the processed files here or in another method
 
-//        wordMap.printProcessedFiles();
+        // wordMap.printProcessedFiles();
 
-        //ADDED
         wordMap.linkWords(fileMap);
+
         // Print the concatenated words
-//        fileMap.printLinkedList();
+        // fileMap.printLinkedList();
 
     }
 
@@ -50,30 +49,25 @@ public class WordMap {
                     // Add file to the list of files for each word in WordHashCodeMap
                     for (String word : processedText) {
                         wordHashCodeMap.addWord(word, file.getName());
+                        resizeWordMap();
                     }
                 }
             }
         }
     }
 
+    private void resizeWordMap() {
 
-//    public void processFiles() throws IOException {
-//        File folder = new File("src/main/java/org/example/sample_dataset");
-//        File[] files = folder.listFiles();
-//
-//        if (files != null) {
-//            for (File file : files) {
-//                if (file.isFile()) {
-//                    List<String> processedText = readAndProcessFile(file);
-//                    processedFiles.put(file.getName(), processedText);
-//                    // Add file to the list of files for each word in WordHashCodeMap
-//                    for (String word : processedText) {
-//                        wordHashCodeMap.addWord(word, file.getName());
-//                    }
-//                }
-//            }
-//        }
-//    }
+        int currentSize = wordHashCodeMap.size();
+        int currentLoadFactor = currentSize > 0 ? wordHashCodeMap.size() / currentSize : 0;
+
+        if (currentLoadFactor > loadFactor) {
+            int newSize = currentSize * 2 + 1;
+
+           // System.out.println(newSize);
+            wordHashCodeMap.resize(newSize);
+        }
+    }
 
     public List<String> readAndProcessFile(File file) throws IOException {
         StringBuilder fileContent = new StringBuilder();
@@ -94,7 +88,7 @@ public class WordMap {
         return processedText;
     }
 
-    //ADDED
+
     public void printProcessedFiles() {
 
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
@@ -124,7 +118,7 @@ public class WordMap {
         }
     }
 
-    //ADDED
+
     public void linkWords(FileMap fileMap) {
 
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
@@ -148,18 +142,5 @@ public class WordMap {
     public List<String> getProcessedTextForFile(String fileName) {
         return fileToProcessedTextMap.get(fileName);
     }
-
-
 }
-/**
-     public void printProcessedFiles() {
-        for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
-            System.out.println("File: " + entry.getKey());
-            System.out.println("Processed Content: " + entry.getValue());
-            System.out.println();
-     }
-        // Optionally print all words with their hash codes
-        wordHashCodeMap.printWordHashCodes();
-     }
 
- **/

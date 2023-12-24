@@ -74,6 +74,7 @@ public class FileMap {
             Map<String, List<Integer>> filePositions = wordEntry.getValue();
 
             if (motVoulu.equals(word)) {
+
                 for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
                     String fileName = fileEntry.getKey();
                     List<Integer> positions = fileEntry.getValue();
@@ -81,11 +82,12 @@ public class FileMap {
                     List<String> wordsList = wordMap.getProcessedTextForFile(fileName);
 
                     for (Integer position : positions) {
-                        // Check if the position is within the bounds of wordsList
-                        if (position < wordsList.size()) { // Remove the - 1 here
+
+                        // Check if the position valid
+                        if (position < wordsList.size()) {
                             String nextWord = wordsList.get(position);
 
-                            // Update the map with the count
+                            // map update
                             motSuivant.put(nextWord, motSuivant.getOrDefault(nextWord, 0) + 1);
                         }
                     }
