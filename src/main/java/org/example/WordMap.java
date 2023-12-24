@@ -58,7 +58,7 @@ public class WordMap implements IWordMap {
 
     public List<String> readAndProcessFile(File file) throws IOException {
         StringBuilder fileContent = new StringBuilder();
-
+        // Try to read lines
         try (BufferedReader inputStream = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = inputStream.readLine()) != null) {
@@ -75,7 +75,7 @@ public class WordMap implements IWordMap {
         return processedText;
     }
 
-    //ADDED
+
     public void printProcessedFiles() {
 
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
@@ -95,6 +95,7 @@ public class WordMap implements IWordMap {
         //wordHashCodeMap.printWordHashCodes();
     }
     public void printFileToProcessedTextMap() {
+        // Aux method to print object
         for (Map.Entry<String, List<String>> entry : fileToProcessedTextMap.entrySet()) {
             String fileName = entry.getKey();
             List<String> processedText = entry.getValue();
@@ -105,9 +106,8 @@ public class WordMap implements IWordMap {
         }
     }
 
-    //ADDED
     public void linkWords(FileMap fileMap) {
-
+        // Links words
         for (Map.Entry<String, List<String>> entry : processedFiles.entrySet()) {
 
             for (String mot : entry.getValue()) {

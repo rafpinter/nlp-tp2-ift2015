@@ -58,7 +58,6 @@ public class WordHashCodeMap {
         }
     }
 
-    //ADDED
     //This Method retireve the positions of a specific word in each files
     public List<Integer> getPositions(String word, String fileName) {
         List<Integer> positions = new ArrayList<>();
