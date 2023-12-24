@@ -62,18 +62,18 @@ public class FileMap {
     // OCCCURENCE
     private Map<String, Integer> occurences = new HashMap<>();
 
-    public int getTotalOccurrencesForWord(String word) {
+    public int getTotalOccurence(String word) {
         return occurences.getOrDefault(word, 0);
     }
 
-    public Map<String, Integer> getWordsAfter(String word, WordMap wordMap) {
-        Map<String, Integer> wordsAfterMap = new HashMap<>();
+    public Map<String, Integer> getFollowingWord(String word, WordMap wordMap) {
+        Map<String, Integer> motSuivant = new HashMap<>();
 
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-            String currentWord = wordEntry.getKey();
+            String motVoulu = wordEntry.getKey();
             Map<String, List<Integer>> filePositions = wordEntry.getValue();
 
-            if (currentWord.equals(word)) {
+            if (motVoulu.equals(word)) {
                 for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
                     String fileName = fileEntry.getKey();
                     List<Integer> positions = fileEntry.getValue();
@@ -86,14 +86,14 @@ public class FileMap {
                             String nextWord = wordsList.get(position);
 
                             // Update the map with the count
-                            wordsAfterMap.put(nextWord, wordsAfterMap.getOrDefault(nextWord, 0) + 1);
+                            motSuivant.put(nextWord, motSuivant.getOrDefault(nextWord, 0) + 1);
                         }
                     }
                 }
             }
         }
 
-        return wordsAfterMap;
+        return motSuivant;
     }
 
 
@@ -165,7 +165,7 @@ public class FileMap {
                 existingPositions.add(pos);
             }
         }
-        occurences.put(word, occurences.getOrDefault(word, 0) + positions.size());
+        occurences.put(word, occurences.getOrDefault(word, 0) + 1);
 
 //        if (!linkedlist.containsKey(word)) {
 //
