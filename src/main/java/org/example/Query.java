@@ -66,7 +66,19 @@ public class Query {
                 } else {
                     System.out.println(line); // Print the line as is if it doesn't match the conditions
                 }
-                writeToFile(outputText.toString(), "src/main/java/org/example/outputs/solution.txt");
+                // Convert StringBuilder to String
+                String outputString = outputText.toString();
+
+                // Remove the last newline character(s) from outputString if it exists
+                if (outputString.endsWith("\n")) {
+                    outputString = outputString.substring(0, outputString.length() - 1);
+                } else if (outputString.endsWith("\r\n")) {
+                    outputString = outputString.substring(0, outputString.length() - 2);
+                }
+
+                // Write the content of outputString to a file
+                writeToFile(outputString, "src/main/java/org/example/outputs/solution.txt");
+
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
