@@ -66,7 +66,14 @@ public class Query {
                 } else {
                     System.out.println(line); // Print the line as is if it doesn't match the conditions
                 }
-                writeToFile(outputText.toString(), "src/main/java/org/example/outputs/solution.txt");
+                // Remove the last newline character(s) from outputText
+                String outputString = outputText.toString();
+                if (outputString.endsWith("\n") || outputString.endsWith("\r\n")) {
+                    outputString = outputString.trim();
+                }
+
+                // Write the content of outputText to a file
+                writeToFile(outputString, "src/main/java/org/example/outputs/solution.txt");
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
@@ -193,7 +200,9 @@ public class Query {
             String mostSimilarWord = null;
             int minDistance = Integer.MAX_VALUE;
 
+            // Iterate through each word in the comparison list
             for (String word : words) {
+                // Calculate the Levenshtein distance
                 int distance = levenshteinDistance(input, word);
 
                 // Check if the current word is more similar (or equally similar but alphabetically smaller)
@@ -202,11 +211,13 @@ public class Query {
                     mostSimilarWord = word;
                 }
             }
+
             // Add the most similar word to the updated list
             // If no similar word is found (null), add the original input word
             updatedInputs.add(mostSimilarWord != null ? mostSimilarWord : input);
         }
 
+        // Return the list of updated words
         return updatedInputs;
     }
 
