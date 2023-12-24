@@ -11,21 +11,19 @@ import static org.example.WordMap.processedFiles;
 public class WordHashCodeMap {
     private Map<String, Integer> wordMap;
     private Map<Integer, List<String>> hashCodeToFileMap;
-    private int size;
 
     public WordHashCodeMap() {
         wordMap = new HashMap<>();
         hashCodeToFileMap = new HashMap<>();
-        size = 0;
     }
 
     public void addWord(String word, String fileName) {
         if (!wordMap.containsKey(word)) {
-            // Assign a identifier size of the map + 1
+            // Assign a unique identifier as the "size of the map + 1"
             int uniqueId = wordMap.size() + 1;
             wordMap.put(word, uniqueId);
 
-            //list for uniqueId in hashCodeToFileMap
+            // Initialize the list for this uniqueId in hashCodeToFileMap
             hashCodeToFileMap.put(uniqueId, new ArrayList<>());
         }
 
@@ -51,6 +49,7 @@ public class WordHashCodeMap {
             //System.out.println("Word: " + entry.getKey() + " - Entry position: " + entry.getValue());
         }
 
+        // Optionally print the hashCodeToFileMap
         printHashCodeToFileMap();
     }
 
@@ -60,6 +59,7 @@ public class WordHashCodeMap {
         }
     }
 
+    //ADDED
     //This Method retireve the positions of a specific word in each files
     public List<Integer> getPositions(String word, String fileName) {
         List<Integer> positions = new ArrayList<>();
@@ -80,28 +80,6 @@ public class WordHashCodeMap {
         }
 
         return positions;
-    }
-
-    public int size() {return size;}
-
-    // gestion du facteur de charge
-    public void resize(int newCapacity) {
-
-        Map<String, Integer> newWordMap = new HashMap<>(newCapacity);
-        Map<Integer, List<String>> newHashCode = new HashMap<>(newCapacity);
-
-        for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
-
-            String word = entry.getKey();
-            int wordId = entry.getValue();
-            List<String> fileList = hashCodeToFileMap.get(wordId);
-
-            newWordMap.put(word, wordId);
-            newHashCode.put(wordId, new ArrayList<>(fileList));
-        }
-
-        wordMap = newWordMap;
-        hashCodeToFileMap = newHashCode;
     }
 }
 
@@ -128,6 +106,7 @@ public class WordHashCodeMap {
  return wordMap;
  }
 
+ // Optional: A method to print all words with their hash codes
  public void printWordHashCodes() {
  for (Map.Entry<String, Integer> entry : wordMap.entrySet()) {
  System.out.println("Word: " + entry.getKey() + " - HashCode: " + entry.getValue());

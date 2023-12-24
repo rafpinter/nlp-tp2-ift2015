@@ -9,6 +9,7 @@ public class Main {
         WordMap wordMap = new WordMap();
         Query query = new Query();
 
+        //ADDED
         FileMap fileMap = new FileMap();
 
         wordMap.processFiles();
@@ -16,6 +17,7 @@ public class Main {
 
 //        wordMap.printProcessedFiles();
 
+        //ADDED
         wordMap.linkWords(fileMap);
         // Print the concatenated words
 //        fileMap.printLinkedList();
