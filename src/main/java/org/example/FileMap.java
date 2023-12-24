@@ -5,17 +5,20 @@ import java.util.*;
 
 public class FileMap {
 
+    // Map structure to store word occurrences in different files along with their positions
     private Map<String, Map<String, List<Integer>>> linkedlist = new HashMap<>();
 
+    // Returns a list of positions of a given word in all documents
     public List<List<Integer>> getWordPositionOnDocumentsList(String word) {
         List<List<Integer>> positionsList = new ArrayList<>();
 
+        // Iterate through each word and its file positions
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
             Map<String, List<Integer>> filePositions = wordEntry.getValue();
-            String leMot = wordEntry.getKey();
+            String currentWord = wordEntry.getKey();
 
-            if (leMot.equals(word)){
-//                System.out.println(word + " was found at " + filePositions.entrySet());
+            if (currentWord.equals(word)) {
+//              // If the current word matches the given word, add its positions to the list
                 for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
                     List<Integer> positions = fileEntry.getValue();
                     positionsList.add(positions);
@@ -26,195 +29,108 @@ public class FileMap {
         return positionsList;
     }
 
+    // Returns the positions of a word in a specific document
     public List<String> getDocumentsWithWord(String word) {
         List<String> fileList = new ArrayList<>();
 
+        // Iterate through each word and its associated documents
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
             String currentWord = wordEntry.getKey();
 
+            // If the current word matches the given word, add the documents to the list
             if (currentWord.equals(word)) {
                 Map<String, List<Integer>> filePositions = wordEntry.getValue();
-//                System.out.println(word + " was found in files: " + filePositions.keySet());
-
                 fileList.addAll(filePositions.keySet());
             }
         }
-
         return fileList;
     }
 
+    // Returns the positions of a word in a specific document
     public List<Integer> getWordPositionsInDocument(String word, String documentName) {
+
         List<List<Integer>> positionsList = getWordPositionOnDocumentsList(word);
         List<String> documentList = getDocumentsWithWord(word);
 
+        // Find the index of the specified document in the document list
         int documentIndex = documentList.indexOf(documentName);
         if (documentIndex != -1 && documentIndex < positionsList.size()) {
             // Return the positions for the specific document
             return positionsList.get(documentIndex);
+
         } else {
             // If the document is not found, return an empty list or null based on your preference
-            return new ArrayList<>();
+            return new ArrayList<>(); // Return empty list if document not found
         }
     }
 
 
-    // FOR THE MOST PROBABLE BIGRAM
-    // OCCCURENCE
+    // Map to store the occurrence count of each word
     private Map<String, Integer> occurences = new HashMap<>();
 
+    // Returns the total occurrence count of a word
     public int getTotalOccurence(String word) {
         return occurences.getOrDefault(word, 0);
     }
 
+    // Returns a map of words following a given word along with their counts
     public Map<String, Integer> getFollowingWord(String word, WordMap wordMap) {
-        Map<String, Integer> motSuivant = new HashMap<>();
+        Map<String, Integer> followingWordCount = new HashMap<>();
 
+        // Iterate through each word and its file positions
         for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-            String motVoulu = wordEntry.getKey();
+            String currentWord = wordEntry.getKey();
             Map<String, List<Integer>> filePositions = wordEntry.getValue();
 
-            if (motVoulu.equals(word)) {
+            // If the current word matches the given word, process its following words
+            if (currentWord.equals(word)) {
                 for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
                     String fileName = fileEntry.getKey();
                     List<Integer> positions = fileEntry.getValue();
 
+                    // Get the processed text for each file
                     List<String> wordsList = wordMap.getProcessedTextForFile(fileName);
 
                     for (Integer position : positions) {
-                        // Check if the position is within the bounds of wordsList
-                        if (position < wordsList.size()) { // Remove the - 1 here
+
+                        if (position < wordsList.size()) {
                             String nextWord = wordsList.get(position);
 
-                            // Update the map with the count
-                            motSuivant.put(nextWord, motSuivant.getOrDefault(nextWord, 0) + 1);
+                            // map update
+                            followingWordCount.put(nextWord, followingWordCount.getOrDefault(nextWord, 0) + 1);
                         }
                     }
                 }
             }
         }
 
-        return motSuivant;
+        return followingWordCount;
     }
 
-
-
-
-//    public void getWordPositionOnDocumentsList(String word){
-//        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-//
-//            Map<String, List<Integer>> filePositions = wordEntry.getValue();
-//            String leMot = wordEntry.getKey();
-//
-//            if (leMot.equals(word)){
-//                System.out.print(leMot + ": [");
-//
-//                int count = 0;
-//
-//                for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
-//                    //                System.out.print(fileEntry.getKey());
-//                    List<Integer> positions = fileEntry.getValue();
-//                    System.out.print(positions);
-//
-//                    // Print comma and space if it's not the last entry
-//                    if (++count < filePositions.size()) {
-//
-//                        System.out.print(", ");
-//                    }
-//                }
-//                System.out.println("]");
-//            }
-//        }
-//    }
-
-//    public List<List<String>> getListOfDocumentsWithWord(String word){
-//
-//        List<List<Integer>> positionsList = new ArrayList<>();
-//
-//        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-//        Map<String, List<Integer>> filePositions = wordEntry.getValue();
-//        String leMot = wordEntry.getKey();
-//
-//        if (leMot.equals(word)){
-//            for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
-//                List<Integer> positions = fileEntry.getValue();
-//                positionsList.add(positions);
-//            }
-//        }
-//    }
-//
-//        return positionsList;
-//    }
-
+    // Links a list of positions to a specific word in a specific file
     public void linkList(String word, List<Integer> positions, String fileName) {
 
-        // If the word is not in the map, initialize it
+        // Initialize the map for the word if not present
         linkedlist.computeIfAbsent(word, k -> new HashMap<>());
 
-        // Get the map for the file
         Map<String, List<Integer>> filePositions = linkedlist.get(word);
 
-        // If the file is not in the map, initialize it
+        // Initialize the list for the file if not present
         filePositions.computeIfAbsent(fileName, k -> new ArrayList<>());
 
-        // Get the existing positions for the word in the file
         List<Integer> existingPositions = filePositions.get(fileName);
 
-        // Add the new positions, avoiding duplicates
+        // Add new positions to the existing list, avoiding duplicates
         for (Integer pos : positions) {
             if (!existingPositions.contains(pos)) {
                 existingPositions.add(pos);
             }
         }
+
+        // Increment the occurrence count for the word
         occurences.put(word, occurences.getOrDefault(word, 0) + 1);
-
-//        if (!linkedlist.containsKey(word)) {
-//
-//            linkedlist.put(word, new HashMap<>());
-//        }
-//
-//        Map<String, List<Integer>> filePositions = linkedlist.get(word);
-//
-//        if (!filePositions.containsKey(fileName)) {
-//
-//            filePositions.put(fileName, new ArrayList<>());
-//        }
-//
-//        List<Integer> existingPositions = filePositions.get(fileName);
-//
-//        existingPositions.addAll(positions);
     }
 
-    public Map<String, Map<String, List<Integer>>> getLinkedlist() {
-
-        return linkedlist;
-    }
-
-
-    public void printLinkedList() {
-
-        for (Map.Entry<String, Map<String, List<Integer>>> wordEntry : linkedlist.entrySet()) {
-
-            Map<String, List<Integer>> filePositions = wordEntry.getValue();
-            String leMot = wordEntry.getKey();
-
-            System.out.print(leMot + ": [");
-
-            int count = 0;
-
-            for (Map.Entry<String, List<Integer>> fileEntry : filePositions.entrySet()) {
-//                System.out.print(fileEntry.getKey());
-                List<Integer> positions = fileEntry.getValue();
-                System.out.print(positions);
-
-                // Print comma and space if it's not the last entry
-                if (++count < filePositions.size()) {
-
-                    System.out.print(", ");
-                }
-            }
-            System.out.println("]");
-        }
-    }
 }
 
 //Ressources and usefull links for the project

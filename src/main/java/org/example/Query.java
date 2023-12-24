@@ -59,7 +59,7 @@ public class Query {
                     System.out.println();
                     // The most probable bi-gram coming after updatedWords
                     String bigram =  mostProbableBigram(updatedWords.get(0), fileMap, wordMap);
-                    System.out.println("Bigram of: " + updatedWords + " is " + bigram);
+                    System.out.println("Bigram of: " + updatedWords.get(0) + " is " + bigram);
                     System.out.println();
                     outputText.append(updatedWords.get(0) + " " + bigram).append("\n");
 
@@ -129,10 +129,6 @@ public class Query {
         return highestScoringDocument;
     }
 
-    // IMPORTANT!
-    //
-    // Anne, please use this method for your part
-    // Method to find the most probable bigram in a given text
     public static String mostProbableBigram(String word, FileMap fileMap, WordMap wordMap) {
 
         // Conditionnal probabilite for each word
@@ -151,6 +147,7 @@ public class Query {
 
             // P(W2|W1) = C(W1, W2) / C(W1)
             double probabilite = (double) occurrences / totalOccurrences;
+            System.out.println("The probability of " + followingWord + " is "+ probabilite);
             proba.put(followingWord, probabilite);
         }
 
@@ -161,51 +158,68 @@ public class Query {
     }
 
     private static String mostProbableWord(Map<String, Double> probabilities) {
-        // Find the word with the highest probability
+
+        // Initialize variables to keep track of the most probable word
         String probable = null;
         double highestProbability = 0.0;
 
+        // Iterate through the map entries (word-probability pairs)
         for (Map.Entry<String, Double> entry : probabilities.entrySet()) {
+            // Get the word and its probability
             String leMot = entry.getKey();
             double probability = entry.getValue();
 
-            if (probability > highestProbability || (probability == highestProbability && leMot.compareTo(probable) < 0)) {
+            // Check if this word has a higher probability than the current highest
+            // or if it's equal but alphabetically smaller
+
+            if (probability > highestProbability ||
+                    (probability == highestProbability && leMot.compareTo(probable) < 0)) {
+                // Update the most probable word and its probability
                 probable = leMot;
                 highestProbability = probability;
             }
         }
 
+        // Return the word with the highest probability
         return probable;
     }
 
     public static List<String> findMostSimilarWords(List<String> inputs, List<String> words) {
+        // List to store the most similar words for each input word
         List<String> updatedInputs = new ArrayList<>();
 
+        // Iterate through each word in the input list
         for (String input : inputs) {
             String mostSimilarWord = null;
             int minDistance = Integer.MAX_VALUE;
 
             for (String word : words) {
                 int distance = levenshteinDistance(input, word);
-                if (distance < minDistance) {
+
+                // Check if the current word is more similar (or equally similar but alphabetically smaller)
+                if (distance < minDistance || (distance == minDistance && word.compareTo(mostSimilarWord) < 0)) {
                     minDistance = distance;
                     mostSimilarWord = word;
                 }
             }
-
+            // Add the most similar word to the updated list
+            // If no similar word is found (null), add the original input word
             updatedInputs.add(mostSimilarWord != null ? mostSimilarWord : input);
         }
 
         return updatedInputs;
     }
 
-    // Method to calculate the Levenshtein distance between two strings
     public static int levenshteinDistance(String str1, String str2) {
+        // Returns the number of edits required to transform one string into another
         int len1 = str1.length();
         int len2 = str2.length();
 
+        // Create a matrix to store distances between substrings
         int[][] dp = new int[len1 + 1][len2 + 1];
 
+        // Initialize the first row and column of the matrix
+        // These represent comparisons with an empty string
         for (int i = 0; i <= len1; i++) {
             dp[i][0] = i;
         }
@@ -216,8 +230,10 @@ public class Query {
 
         for (int i = 1; i <= len1; i++) {
             for (int j = 1; j <= len2; j++) {
+                // Check if characters at current position are the same
                 int cost = (str1.charAt(i - 1) == str2.charAt(j - 1)) ? 0 : 1;
 
+                // Calculate minimum cost considering all three operations (insert, delete, substitute)
                 dp[i][j] = Math.min(Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1), dp[i - 1][j - 1] + cost);
             }
         }
